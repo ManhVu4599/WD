@@ -1,0 +1,40 @@
+﻿                    <label><input type="radio" id="att-no" name="attendance" value="Tháº­t tiáº¿c mÃ¬nh báº­n máº¥t rá»“i"> Tháº­t tiáº¿c mÃ¬nh báº­n máº¥t rá»“i</label>
+                    <label><input type="radio" id="att-maybe" name="attendance" value="MÃ¬nh Ä‘ang cÃ¢n nháº¯c"> MÃ¬nh Ä‘ang cÃ¢n nháº¯c</label>
+                </div>
+
+                <button type="submit" class="submit-button btn-outline">Gá»¬I Lá»œI NHáº®N VÃ€ XÃC NHáº¬N</button>
+                <p id="form-message" class="form-message" style="display:none"></p>
+            </form>
+
+            <a class="donate-btn groom" href="#" data-qr="images/qr-groom.jpg">Gá»¬I Má»ªNG CÆ¯á»šI NHÃ€ TRAI</a>
+            <a class="donate-btn bride" href="#" data-qr="images/qr-bride.jpg">Gá»¬I Má»ªNG CÆ¯á»šI NHÃ€ GÃI</a>
+        </div>
+
+        <!-- QR Modal -->
+        <div id="qr-modal" class="qr-modal" aria-hidden="true">
+            <div class="qr-backdrop"></div>
+            <div class="qr-dialog" role="dialog" aria-modal="true">
+                <button type="button" class="qr-close" aria-label="ÄÃ³ng">Ã—</button>
+                <img id="qr-image" src="" alt="QR má»«ng cÆ°á»›i" />
+                <p class="qr-caption"></p>
+            </div>
+        </div>
+
+        <div class="footer-text" data-aos="fade-up">
+            <h2>HAPPY WEDDING</h2>
+            <p>07.12.2025</p>
+        </div>
+    </section>
+
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: false,      // cháº¡y láº¡i khi cuá»™n lÃªn
+            mirror: true,     // animate khi cuá»™n ngÆ°á»£c
+            offset: 50,
+        });
+    </script>
+    <script src="script.js"></script>
+</body>
+
+</html>

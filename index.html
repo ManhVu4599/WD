@@ -162,14 +162,14 @@
         <div class="event-group align-right" data-aos="fade-up" data-aos-delay="150">
             <div class="ribbon ribbon-right" data-aos="fade-left" data-aos-delay="200">TIỆC CƯỚI NHÀ TRAI</div>
             <div class="event-box right-line shift-right" data-aos="fade-left" data-aos-delay="260">
-                <div class="event-time">17H00 - Thứ Bảy</div>
+                <div class="event-time">16H00 - Thứ Bảy</div>
                 <div class="event-date">06.12.2025</div>
                 <div class="event-lunar">( Tức ngày 17 Tháng 10 Năm Ất Tỵ)</div>
             </div>
 
             <div class="ribbon ribbon-right" data-aos="fade-left" data-aos-delay="200">LỄ TÂN HÔN</div>
             <div class="event-box right-line shift-right" data-aos="fade-left" data-aos-delay="260">
-                <div class="event-time">12H00 - Chủ Nhật</div>
+                <div class="event-time">11H20 - Chủ Nhật</div>
                 <div class="event-date">07.10.2025</div>
                 <div class="event-lunar">( Tức ngày 18 Tháng 10 Năm Ất Tỵ)</div>
             </div>
@@ -296,6 +296,41 @@
             mirror: true,     // animate khi cuộn ngược
             offset: 50,
         });
+    </script>
+    <!-- Music: hidden audio + toggle button -->
+    <audio id="wedding-audio" preload="metadata">
+        <source src="music/một_đời.mp3" type="audio/mpeg">
+    </audio>
+    <button id="music-toggle" class="music-toggle off" aria-pressed="false" aria-label="Bật nhạc">
+        <span class="icon" aria-hidden="true">♪</span>
+    </button>
+    <!-- Apps Script Web App config (preferred) -->
+    <script>
+      window.APP_SCRIPT = {
+        // Paste your Apps Script Web App 'exec' URL here
+        action: 'https://script.google.com/macros/s/AKfycbzRP9yGyyuShCV0b3aeTO5E73wkPtGCmTcJA80fEbgHMeqfvFANHnOA3BEo-YFvONGS/exec',
+        // Send JSON like your curl
+        format: 'json',
+        // Optional: override parameter names expected by your script
+        // If your script expects English keys, you can remove this block.
+        fields: {
+          name: 'name',
+          attendance: 'attendance',
+          message: 'message'
+        }
+      };
+    </script>
+    <!-- RSVP -> Google Forms config (replace with your real IDs) -->
+    <script>
+      window.GOOGLE_FORM = {
+        // Paste your Google Form action URL here (must end with /formResponse)
+        action: 'https://script.google.com/macros/s/AKfycbzRP9yGyyuShCV0b3aeTO5E73wkPtGCmTcJA80fEbgHMeqfvFANHnOA3BEo-YFvONGS/exec',
+        // Map fields below to your actual entry IDs from the Form
+        nameEntry: 'name',
+        attendanceEntry: 'attendance',
+        // Optional: leave empty string '' if your Form has no message field
+        messageEntry: 'message'
+      };
     </script>
     <script src="script.js"></script>
 </body>

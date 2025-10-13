@@ -72,18 +72,35 @@ document.addEventListener('DOMContentLoaded', function() {
         const attendance = document.querySelector('input[name="attendance"]:checked').value;
 
         let sent = false;
-        const cfg = window.GOOGLE_FORM || null;
-        try {
-            if (cfg && cfg.action && cfg.nameEntry && cfg.attendanceEntry) {
-                const body = new URLSearchParams();
-                body.append(cfg.nameEntry, name);
-                body.append(cfg.attendanceEntry, attendance);
-                if (cfg.messageEntry && message) body.append(cfg.messageEntry, message);
+        const app = window.APP_SCRIPT || null;    // Apps Script endpoint (JSON only)
 
-                await fetch(cfg.action, { method: 'POST', mode: 'no-cors', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body });
+        // JSON-only submission to Apps Script
+        if (!sent && app && app.action) {
+            const fields = (app.fields || {});
+            const payload = { name, attendance };
+            if (message) payload.message = message;
+            // Include alternate keys if server expects localized names
+            if (fields.name && fields.name !== 'name') payload[fields.name] = name;
+            if (fields.attendance && fields.attendance !== 'attendance') payload[fields.attendance] = attendance;
+            if (message && fields.message && fields.message !== 'message') payload[fields.message] = message;
+            try {
+                let ok = false;
+                if (navigator.sendBeacon) {
+                    const blob = new Blob([JSON.stringify(payload)], { type: 'text/plain;charset=UTF-8' });
+                    ok = navigator.sendBeacon(app.action, blob);
+                }
+                if (!ok) {
+                    await fetch(app.action, {
+                        method: 'POST',
+                        mode: 'no-cors',
+                        headers: { 'Content-Type': 'text/plain;charset=UTF-8' },
+                        referrerPolicy: 'no-referrer',
+                        body: JSON.stringify(payload)
+                    });
+                }
                 sent = true;
-            }
-        } catch (_) { /* ignore network issues */ }
+            } catch (_) { /* network error -> treat as not sent */ }
+        }
 
         formMessage.style.display = 'block';
         formMessage.style.color = 'green';
@@ -249,5 +266,38 @@ document.addEventListener('DOMContentLoaded', function() {
 
         [closeBtn, backdrop].forEach(el => el && el.addEventListener('click', close));
         document.addEventListener('keydown', (e)=>{ if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+    })();
+
+    // 8) Music toggle button (play/pause)
+    (function(){
+        const audio = document.getElementById('wedding-audio');
+        const btn = document.getElementById('music-toggle');
+        if (!audio || !btn) return;
+
+        const sync = () => {
+            const isPlaying = !audio.paused && !audio.ended;
+            btn.classList.toggle('playing', isPlaying);
+            btn.classList.toggle('off', !isPlaying);
+            btn.setAttribute('aria-pressed', String(isPlaying));
+            btn.setAttribute('aria-label', isPlaying ? 'Tắt nhạc' : 'Bật nhạc');
+        };
+
+        btn.addEventListener('click', async () => {
+            try {
+                if (audio.paused || audio.ended) {
+                    await audio.play();
+                } else {
+                    audio.pause();
+                }
+            } catch (_) { /* ignore playback errors (autoplay policies, etc.) */ }
+            finally { sync(); }
+        });
+
+        audio.addEventListener('play', sync);
+        audio.addEventListener('pause', sync);
+        audio.addEventListener('ended', () => { try { audio.currentTime = 0; } catch(_){}; sync(); });
+
+        // Initialize state
+        sync();
     })();
 });
