@@ -2,7 +2,7 @@
 :root {
     --primary-color: #7d2a2a; /* Màu đỏ đậm/nâu đỏ cho chữ script */
     --background-color: #f7f3ee; /* Màu kem nhạt */
-    --text-color: #333;
+    --text-color: #362323;
     --font-script: 'Great Vibes', cursive;
     --font-serif: 'Playfair Display', serif; 
     --font-signature: 'Sacramento', cursive; 
@@ -30,7 +30,7 @@ body {
 }
 
 .padded-section {
-    padding: 60px 20px;
+    padding: 30px 20px;
 }
 
 .content-wrapper {
@@ -881,6 +881,14 @@ section#invitation .full-width-image {
     .photo-frame::after  { right: -30px; width: 120px; }
 }
 
+/* Keep hero in two columns for save-date-intro on mobile */
+@media (max-width: 600px) {
+#save-date-intro .gb-hero { grid-template-columns: 0.95fr 1.05fr; gap: 8px; align-items: center; }
+#save-date-intro .gb-title { text-align: left; font-size: clamp(26px, 7.8vw, 38px); }
+#save-date-intro .gb-right { text-align: left; }
+#save-date-intro .gb-name { font-size: clamp(18px, 4.9vw, 24px); margin: 4px 0; }
+}
+
 /* --------------------------------------------------------------- */
 /* Invitation banner after #groom-bride                            */
 /* --------------------------------------------------------------- */
@@ -965,6 +973,12 @@ section#invitation .full-width-image {
 
 @media (min-width: 640px) {
     .addresses-dual { grid-template-columns: 1fr 1fr; }
+}
+
+@media (max-width: 600px) {
+    .invite-banner .families { gap: 10px; }
+    .invite-banner .family { font-size: 13px; }
+    .invite-banner .couple-names { letter-spacing: 1px; }
 }
 
 /* --------------------------------------------------------------- */
