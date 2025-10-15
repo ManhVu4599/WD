@@ -300,4 +300,82 @@ document.addEventListener('DOMContentLoaded', function() {
         // Initialize state
         sync();
     })();
+    // 9) Photo lightbox for Album (click to zoom)
+    (function(){
+        const modal = document.getElementById('photo-modal');
+        const modalImg = document.getElementById('photo-modal-img');
+        const captionEl = modal ? modal.querySelector('.photo-caption') : null;
+        if (modal && modalImg) {
+            const open = (src, alt, caption) => {
+                modalImg.src = src;
+                modalImg.alt = alt || '';
+                if (captionEl) {
+                    captionEl.textContent = caption || '';
+                    captionEl.style.display = caption ? 'block' : 'none';
+                }
+                modal.classList.add('open');
+                modal.setAttribute('aria-hidden','false');
+                document.body.style.overflow = 'hidden';
+            };
+            const close = () => {
+                modal.classList.remove('open');
+                modal.setAttribute('aria-hidden','true');
+                document.body.style.overflow = '';
+                setTimeout(()=>{ modalImg.src = ''; }, 200);
+            };
+            document.querySelectorAll('.album-collage .polaroid img').forEach(img => {
+                if (!img.hasAttribute('loading')) img.setAttribute('loading','lazy');
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', () => {
+                    const fig = img.closest('figure');
+                    const full = img.getAttribute('data-full') || img.src;
+                    const cap = fig && fig.querySelector('figcaption') ? fig.querySelector('figcaption').textContent.trim() : (img.alt || '');
+                    open(full, img.alt || '', cap);
+                });
+            });
+            modal.addEventListener('click', (e) => {
+                if (e.target.classList.contains('photo-backdrop') || e.target.classList.contains('photo-close')) {
+                    close();
+                }
+            });
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape' && modal.classList.contains('open')) close();
+            });
+        }
+    })();
+
+    // 10) Drag-to-scroll for film strip + smooth wheel + nav buttons
+    (function(){
+        const strips = Array.from(document.querySelectorAll('.album-collage.film-strip'));
+        if (!strips.length) return;
+
+        strips.forEach(strip => {
+            let isDown = false, startX = 0, startLeft = 0, lastDX = 0, lastTime = 0, raf = 0;
+            const stop = ()=>{ if (raf) cancelAnimationFrame(raf), raf = 0; };
+            const momentum = ()=>{ strip.scrollLeft -= lastDX; lastDX *= 0.95; if (Math.abs(lastDX) > 0.5) raf = requestAnimationFrame(momentum); };
+
+            const onDown = x=>{ isDown = true; startX = x; startLeft = strip.scrollLeft; lastDX = 0; lastTime = Date.now(); stop(); };
+            const onMove = x=>{
+                if (!isDown) return;
+                const dx = x - startX; strip.scrollLeft = startLeft - dx;
+                const now = Date.now(), dt = Math.max(1, now - lastTime); lastDX = (dx - lastDX)/dt*16; lastTime = now;
+            };
+            const onUp = ()=>{ if (!isDown) return; isDown = false; raf = requestAnimationFrame(momentum); };
+
+            // Mouse
+            strip.addEventListener('mousedown', e=>{ if (e.button!==0) return; onDown(e.clientX); });
+            window.addEventListener('mousemove', e=> onMove(e.clientX));
+            window.addEventListener('mouseup', onUp);
+            // Touch
+            strip.addEventListener('touchstart', e=>{ const t=e.touches[0]; onDown(t.clientX); }, {passive:true});
+            strip.addEventListener('touchmove', e=>{ const t=e.touches[0]; onMove(t.clientX); }, {passive:true});
+            strip.addEventListener('touchend', onUp);
+            // Wheel
+            strip.addEventListener('wheel', e=>{
+                const delta = Math.abs(e.deltaX) < Math.abs(e.deltaY) ? e.deltaY : e.deltaX;
+                strip.scrollBy({ left: delta*0.8, behavior: 'smooth' });
+                e.preventDefault();
+            }, {passive:false});
+        });
+    })();
 });

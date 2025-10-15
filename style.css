@@ -614,6 +614,221 @@ section#invitation .full-width-image {
 }
 
 
+/* --------------------------------------------------------------- */
+/* Album Ảnh: Polaroid Collage (tilt, viền, bóng, tape)          */
+/* + Biến thể Film Strip (thước phim)                            */
+/* --------------------------------------------------------------- */
+#album { position: relative; }
+#album .script-title { margin-bottom: 16px; }
+#album .film-wrap{ display: grid; gap: 22px; position: relative; overflow: visible; }
+
+.album-collage {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 ảnh mỗi hàng */
+    gap: 16px;
+    max-width: 620px;
+    margin: 0 auto;
+}
+
+/* Film strip layout: một hàng ngang cuộn, có lỗ thước phim trên/dưới */
+.album-collage.film-strip {
+  --film: #6c3b22;                        /* nâu thước phim */
+  grid-template-columns: none;            /* bỏ lưới 3 cột */
+  grid-auto-flow: column;                 /* xếp theo cột ngang */
+  grid-auto-columns: 65%;                 /* mỗi khung ~65% chiều rộng (sát nhau hơn) */
+  gap: 6px;                               /* khoảng cách khung nhỏ lại */
+  overflow-x: auto;
+  padding: 24px 12px;                     /* ray mỏng hơn, sát nội dung */
+  border-radius: 10px;
+  background: var(--film);
+  box-shadow: 0 14px 28px rgba(0,0,0,.18);
+  position: relative;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  transform: rotate(-6deg); /* tilt base */
+}
+.album-collage.film-strip::before,
+.album-collage.film-strip::after{
+  content: '';
+  position: absolute; left: 10px; right: 10px; height: 18px;
+  background:
+    /* lỗ nhỏ chữ nhật đều nhau */
+    repeating-linear-gradient(to right, var(--background-color) 0 7px, transparent 7px 19px),
+    var(--film);
+  background-repeat: repeat, no-repeat;
+  background-position: 12px 0, 0 0; /* dịch các lỗ khỏi sát mép để không hở viền */
+  border-radius: 4px;
+  box-shadow: 0 1px 0 rgba(0,0,0,.2) inset, 0 -1px 0 rgba(0,0,0,.2) inset;
+  pointer-events: none;
+}
+.album-collage.film-strip::before{ top: 6px; }
+.album-collage.film-strip::after { bottom: 6px; }
+
+.album-collage.film-strip .polaroid{
+  scroll-snap-align: start;
+  background: #fff;                       /* nền sáng cho khung */
+  border: 0;
+  border-radius: 10px;
+  padding: 6px;                            /* sát hơn */
+  margin: 0;                               /* bỏ khoảng thừa */
+  box-shadow: 0 10px 18px rgba(0,0,0,.14);
+  transform: none;                        /* bỏ nghiêng từng khung */
+}
+.album-collage.film-strip .polaroid:hover{ transform: translateY(-2px); }
+.album-collage.film-strip .polaroid img{
+  height: 260px;                           /* khung to hơn trong film */
+  border-radius: 8px;
+}
+.album-collage.film-strip .polaroid figcaption{ display: none; }
+/* tắt tape trang trí trong biến thể film */
+.album-collage.film-strip .polaroid::before { content: none !important; }
+
+/* viền mờ 2 mép khi cuộn */
+.album-collage.film-strip > *:first-child { margin-left: 2px; }
+.album-collage.film-strip > *:last-child  { margin-right: 2px; }
+
+.polaroid {
+    --pad: 10px;         /* khoảng trắng khung */
+    --foot: 28px;        /* mép dưới dày hơn như polaroid */
+    --bg: #fff;          /* nền khung */
+    --bd: #e9e4de;       /* viền nhạt */
+    background: var(--bg);
+    border: 1px solid var(--bd);
+    border-radius: 8px;
+    padding: var(--pad) var(--pad) calc(var(--pad) + var(--foot));
+    box-shadow: 0 10px 18px rgba(0,0,0,0.10), 0 1px 0 rgba(0,0,0,0.05) inset;
+    transform-origin: center top;
+    transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
+    position: relative;
+}
+
+.polaroid img {
+    width: 100%;
+    height: 210px; /* to hơn một chút */
+    object-fit: cover;
+    border-radius: 4px;
+    display: block;
+}
+
+.polaroid figcaption {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 8px;
+    text-align: center;
+    font-size: .95em; /* chữ lớn hơn nhẹ */
+    color: #6b5549;
+    letter-spacing: .2px;
+}
+
+/* Nghiêng ngả nhẹ theo vị trí để tạo cảm giác ngẫu nhiên */
+.album-collage .polaroid:nth-child(6n+1) { transform: rotate(-2.8deg); }
+.album-collage .polaroid:nth-child(6n+2) { transform: rotate(2.2deg); }
+.album-collage .polaroid:nth-child(6n+3) { transform: rotate(-1.2deg); }
+.album-collage .polaroid:nth-child(6n+4) { transform: rotate(3.2deg); }
+.album-collage .polaroid:nth-child(6n+5) { transform: rotate(-3.6deg); }
+.album-collage .polaroid:nth-child(6n)   { transform: rotate(1.6deg); }
+
+/* Bố cục “lộn xộn” nhẹ: lệch hàng theo chu kỳ */
+/* Căn đều hàng: bỏ lệch hàng để đủ 3 ảnh/row */
+.album-collage .polaroid { margin-top: 0; }
+
+/* Hover: thẳng lại một chút + nổi khối hơn */
+.polaroid:hover {
+    transform: rotate(0deg) translateY(-6px) scale(1.02);
+    box-shadow: 0 14px 26px rgba(0,0,0,0.16), 0 1px 0 rgba(0,0,0,0.06) inset;
+    filter: saturate(1.05);
+}
+
+/* Trang trí “băng dán” giấy mờ ở một vài tấm */
+.album-collage .polaroid:nth-child(3n)::before,
+.album-collage .polaroid:nth-child(5n)::before {
+    content: '';
+    position: absolute;
+    top: -8px; left: 50%; transform: translateX(-50%) rotate(-6deg);
+    width: 64px; height: 16px;
+    background: repeating-linear-gradient(135deg, rgba(255,255,255,.85), rgba(255,255,255,.85) 6px, rgba(0,0,0,.04) 6px, rgba(0,0,0,.04) 12px);
+    box-shadow: 0 2px 4px rgba(0,0,0,.08);
+    border-radius: 3px;
+    opacity: .9;
+}
+
+@media (max-width: 500px) {
+  .polaroid img { height: 180px; }
+}
+
+/* Màn hình rất nhỏ: về 2 cột cho dễ nhìn */
+@media (max-width: 420px) {
+  .album-collage { grid-template-columns: repeat(2, 1fr); }
+  .album-collage.film-strip { grid-auto-columns: 85%; transform: rotate(-4deg); }
+}
+
+/* -------------------- Photo Lightbox -------------------- */
+.photo-modal { position: fixed; inset: 0; display: none; align-items: center; justify-content: center; z-index: 10010; }
+.photo-modal.open { display: flex; }
+.photo-backdrop { position: absolute; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); }
+.photo-dialog {
+  position: relative;
+  background: #fff;
+  border-radius: 10px;
+  width: min(96vw, 900px);
+  max-height: 90vh;
+  padding: 10px 10px 14px;
+  box-shadow: 0 20px 54px rgba(0,0,0,.4);
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+}
+.photo-dialog img { display:block; width:100%; height:auto; max-height: 80vh; object-fit: contain; border-radius: 6px; }
+.photo-caption { text-align:center; margin: 8px 0 0; color:#5a3b2d; font-weight:600; }
+.photo-close {
+  position: absolute; top: -12px; right: -12px;
+  width: 36px; height: 36px; border-radius: 50%;
+  border: 1px solid #333; background:#fff; color:#333; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; font-size: 20px; line-height:1;
+  box-shadow: 0 8px 18px rgba(0,0,0,.3);
+}
+
+@media (max-width: 480px) {
+  .photo-dialog { width: 94vw; }
+  .photo-close { top: -8px; right: -8px; width: 32px; height: 32px; }
+}
+
+/* ---- Film strip enhancements (override) ---- */
+.album-collage.film-strip { scrollbar-width: none; -ms-overflow-style: none; cursor: grab; }
+.album-collage.film-strip:active { cursor: grabbing; }
+.album-collage.film-strip::-webkit-scrollbar { display: none; height: 0; }
+.album-collage.film-strip::before,
+.album-collage.film-strip::after{ left: 0; right: 0; }
+
+/* ---- Smaller photo modal (override) ---- */
+.photo-dialog { width: min(90vw, 760px); max-height: 86vh; }
+.photo-dialog img { max-height: 74vh; }
+
+/* ---- Film nav arrows ---- */
+#album { position: relative; }
+.film-nav {
+  position: absolute;
+  left: 0; right: 0;
+  top: 50%; transform: translateY(-50%);
+  display: flex; justify-content: space-between;
+  padding: 0 6px;
+  pointer-events: none;
+}
+.film-nav button{
+  pointer-events: auto;
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.9);
+  color: #5a3b2d;
+  box-shadow: 0 6px 16px rgba(0,0,0,.2);
+  cursor: pointer;
+  display: grid; place-items: center;
+  font-size: 18px; font-weight: 700;
+}
+.film-nav button:active{ transform: scale(.98); }
+
+
 /* ---------------------------------------------------------------- */
 /* CSS cho BỐ CỤC ẢNH PHỤ (2x2) (Giữ nguyên) */
 /* ---------------------------------------------------------------- */
@@ -1120,3 +1335,7 @@ section#invitation .full-width-image {
     70%  { transform: scale(1.25); opacity: 0; }
     100% { transform: scale(1.25); opacity: 0; }
 }
+
+
+.album-collage.film-strip.film-strip--one{ transform: rotate(-7deg); }
+.album-collage.film-strip.film-strip--two{ transform: rotate(-5deg); }
