@@ -635,7 +635,7 @@ section#invitation .full-width-image {
   --film: #6c3b22;                        /* nâu thước phim */
   grid-template-columns: none;            /* bỏ lưới 3 cột */
   grid-auto-flow: column;                 /* xếp theo cột ngang */
-  grid-auto-columns: 65%;                 /* mỗi khung ~65% chiều rộng (sát nhau hơn) */
+  grid-auto-columns: 58%;                 /* mỗi khung nhỏ lại một chút */
   gap: 6px;                               /* khoảng cách khung nhỏ lại */
   overflow-x: auto;
   padding: 24px 12px;                     /* ray mỏng hơn, sát nội dung */
