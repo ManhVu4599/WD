@@ -8,6 +8,8 @@
     --font-signature: 'Sacramento', cursive; 
 }
 
+html { overflow-x: hidden; }
+
 body {
     font-family: var(--font-serif);
     margin: 0 auto; 
@@ -298,6 +300,28 @@ body {
     font-size: 1.1em;
 }
 
+/* Mobile tweaks */
+@media (max-width: 480px) {
+  .intro-text { max-width: 92%; margin: 24px auto; font-size: 1em; }
+  .script-title { font-size: clamp(32px, 10vw, 44px); }
+  .calendar-happiness { font-size: 34px; }
+  .calendar-subtitle { font-size: .95em; }
+  .calendar-grid { gap: 6px 8px; font-size: .95em; }
+  .calendar-day--heart, .calendar-day--active { width: 28px; height: 28px; }
+  .calendar-day--heart::before { inset: 3px; }
+}
+
+@media (max-width: 360px) {
+  .padded-section .image-row,
+  .padded-section .image-row.photo-2x2 { margin-left: -16px; margin-right: -16px; }
+}
+
+/* iPhone 14 Pro Max (~430px) giảm full-bleed để tránh dư mép */
+@media (max-width: 430px) {
+  .padded-section .image-row,
+  .padded-section .image-row.photo-2x2 { margin-left: -18px; margin-right: -18px; }
+}
+
 /* ---------------------------------------------------------------- */
 /* PHẦN 3: INVITATION (Giữ nguyên) */
 /* ---------------------------------------------------------------- */
@@ -367,6 +391,7 @@ section#invitation .full-width-image {
 /* Calendar overlay on invitation image */
 /* --------------------------------------------------------------- */
 #invitation .image-row { position: relative; }
+.image-row { overflow: hidden; }
 #invitation .calendar-overlay {
     margin-top: 10px;
     position: absolute;
@@ -1425,6 +1450,15 @@ section#invitation .full-width-image {
 
 /* Mobile: về 1 cột, bỏ lệch */
 @media (max-width: 540px) {
+  /* Vẫn giữ bố cục 2 cột và xen kẽ trên mobile */
+  #album .film-wrap { grid-template-columns: 1fr 1fr; }
+  #album .film-wrap .film-strip--two{ margin-top: 24px; }
+  .album-collage.film-strip.film-strip--one .polaroid:nth-child(even),
+  .album-collage.film-strip.film-strip--two .polaroid:nth-child(odd) { margin-top: 14px; }
+}
+
+/* Rất nhỏ: fallback 1 cột để dễ nhìn */
+@media (max-width: 360px) {
   #album .film-wrap { grid-template-columns: 1fr; }
   #album .film-wrap .film-strip--two{ margin-top: 0; }
 }
