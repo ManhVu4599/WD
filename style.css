@@ -409,12 +409,28 @@ section#invitation .full-width-image {
 .calendar-day--muted { opacity: 0.45; }
 
 .calendar-day--active {
+    /* giữ style cũ (vòng tròn) nếu cần dùng nơi khác */
     color: #fff;
     background: var(--primary-color);
     border-radius: 50%;
     width: 32px; height: 32px;
     display: inline-flex; align-items: center; justify-content: center;
     margin: 0 auto;
+}
+
+/* Heart-highlighted days (ví dụ: 6 & 7) */
+.calendar-day { position: relative; }
+.calendar-day--heart {
+  color: var(--primary-color);
+  width: 32px; height: 32px;
+  display: inline-flex; align-items:center; justify-content:center;
+  margin: 0 auto; position: relative;
+}
+.calendar-day--heart::before{
+  content: '';
+  position: absolute; inset: 2px; /* viền không chạm mép */
+  background: center / contain no-repeat url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M12 21s-8-6.5-8-11a5 5 0 0 1 9-3 5 5 0 0 1 9 3c0 4.5-8 11-8 11z' fill='none' stroke='%237d2a2a' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+  pointer-events: none; z-index: 0;
 }
 
 @media (max-width: 600px) {
@@ -847,6 +863,16 @@ section#invitation .full-width-image {
     border-radius: 5px; 
 }
 
+/* ---- Full-width override for single image rows ---- */
+.image-row.photo-2x2 { width: 100%; max-width: none; margin-left: 0; margin-right: 0; }
+.image-row.photo-2x2 img:only-child { width: 100%; display: block; }
+
+/* Keep full-bleed inside padded section (share with hero) */
+.padded-section .image-row.photo-2x2 { margin-left: -22px; margin-right: -22px; }
+
+/* Khi hàng chỉ có 1 ảnh: bỏ flex để ảnh thật sự full */
+.image-row.photo-2x2:has(img:only-child) { display: block; }
+
 .margin-bottom-30 {
     margin-bottom: 30px;
 }
@@ -1019,10 +1045,16 @@ section#invitation .full-width-image {
     margin: 6px 0 18px;
 }
 
+.padded-section .image-row { /* cho ảnh hero full-bleed theo phần padding */
+    margin-left: -20px;
+    margin-right: -20px;
+}
+
 .hero-photo {
     width: 100%;
-    max-width: 600px;
+    max-width: none; /* cho phép full theo container */
     height: auto;
+    display: block; /* tránh bị ảnh hưởng bởi text-align */
     border-radius: 4px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.12);
 }
@@ -1030,7 +1062,8 @@ section#invitation .full-width-image {
 /* Decorative swooshes around the photo */
 .photo-frame {
     position: relative;
-    display: inline-block;
+    display: block;   /* block để bao full chiều ngang */
+    width: 100%;
 }
 .photo-frame::before,
 .photo-frame::after {
@@ -1339,3 +1372,59 @@ section#invitation .full-width-image {
 
 .album-collage.film-strip.film-strip--one{ transform: rotate(-7deg); }
 .album-collage.film-strip.film-strip--two{ transform: rotate(-5deg); }
+
+
+/* ---- Interleaved film frames (xen kẽ) ---- */
+/* So le ảnh giữa hai dải film: strip 1 nâng ảnh chẵn, strip 2 nâng ảnh lẻ */
+.album-collage.film-strip.film-strip--one .polaroid:nth-child(even) { margin-top: 32px; }
+.album-collage.film-strip.film-strip--two .polaroid:nth-child(odd)  { margin-top: 32px; }
+
+/* Nhẹ nhàng hơn trên màn hình nhỏ */
+@media (max-width: 540px) {
+  .album-collage.film-strip.film-strip--one .polaroid:nth-child(even),
+  .album-collage.film-strip.film-strip--two .polaroid:nth-child(odd) {
+    margin-top: 18px;
+  }
+}
+
+/* Tránh lệch khi chỉ có 1 ảnh mỗi strip */
+.album-collage.film-strip .polaroid:first-child:last-child { margin-top: 0; }
+
+/* ---- Two-column stacked layout in album ---- */
+/* Biến hai film-strip thành hai cột đứng, cột phải lệch xuống */
+#album .film-wrap {
+  grid-template-columns: 1fr 1fr;
+  align-items: start;
+}
+
+#album .film-wrap .album-collage{
+  width: 100%;
+  max-width: none;
+  margin: 0; /* bỏ căn giữa gây không full */
+}
+
+#album .film-wrap .album-collage.film-strip {
+  /* tắt hiệu ứng cuộn ngang như film */
+  grid-auto-flow: row;
+  grid-auto-columns: initial;
+  gap: 16px;
+  overflow: visible;
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  border-radius: 0;
+  transform: none;          /* bỏ nghiêng toàn dải */
+  scroll-snap-type: none;
+}
+
+#album .film-wrap .album-collage.film-strip::before,
+#album .film-wrap .album-collage.film-strip::after{ content: none; }
+
+/* Lệch cả cột phải để tạo cảm giác đan xen */
+#album .film-wrap .film-strip--two{ margin-top: 40px; }
+
+/* Mobile: về 1 cột, bỏ lệch */
+@media (max-width: 540px) {
+  #album .film-wrap { grid-template-columns: 1fr; }
+  #album .film-wrap .film-strip--two{ margin-top: 0; }
+}

@@ -191,7 +191,8 @@ document.addEventListener('DOMContentLoaded', function() {
         const date = new Date(weddingDate.getTime());
         const year = date.getFullYear();
         const month = date.getMonth(); // 0-11
-        const selectedDay = date.getDate();
+        // Highlight multiple special days (e.g., Lễ 6 & 7)
+        const highlightedDays = [6, 7];
 
         // Build calendar: show days from 1st weekday offset
         const first = new Date(year, month, 1);
@@ -207,7 +208,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
         for (let d = 1; d <= daysInMonth; d++) {
             const cell = document.createElement('div');
-            cell.className = 'calendar-day' + (d === selectedDay ? ' calendar-day--active' : '');
+            const isHeart = highlightedDays.includes(d);
+            cell.className = 'calendar-day' + (isHeart ? ' calendar-day--heart' : '');
             cell.textContent = d;
             grid.appendChild(cell);
         }
