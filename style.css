@@ -23,6 +23,11 @@ body {
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.1); 
 }
 
+/* Hide vertical scrollbar UI but keep page scrollable */
+html { scrollbar-width: none; }            /* Firefox */
+body { -ms-overflow-style: none; }         /* IE/Edge legacy */
+body::-webkit-scrollbar { width: 0; height: 0; } /* Chrome/Edge/Safari */
+
 /* Cấu trúc chung */
 .section {
     width: 100%;
